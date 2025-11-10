@@ -1,34 +1,6 @@
 ---
 
 - name: ansible-iam | import roles if standalone
-  ansible.builtin.include_tasks: deps.yml
+  ansible.builtin.include_tasks: requirements.yml
   when:
     - standalone_role
-    - kube_masters_group in group_names
-
-- name: ansible-iam | create platform namespace
-  ansible.builtin.include_role:
-    name: tcharl.ansible_orchestration_cli
-  vars:
-    ansible_become: true
-    standalone_role: False
-    kube_sysadmin_client_cert_path: "{{ kube_credential_folder }}/kubeadm.crt"
-    kube_sysadmin_client_key_path: "{{ kube_credential_folder }}/kubeadm.pem"
-    kube_cacert_path: "{{ kubernetes_certificates_path }}ca.crt"
-    descriptor_sets:
-      - url: https://github.com/OsgiliathEnterprise/orchestrator-system-configuration.git
-        kind: git
-        branch: master
-        descriptors:
-          - namespaces/platform-core.yml
-    helm_install: Yes
-
-- name: ansible-iam | | install stackgres
-  kubernetes.core.helm:
-    name: keycloak-stackgres
-    chart_ref: "https://stackgres.io/downloads/stackgres-k8s/stackgres/latest/helm/stackgres-operator.tgz"
-    release_namespace: platform-core
-    create_namespace: true
-    kubeconfig: "{{ kube_config_path }}"
-    values: "{{ lookup('templates', 'stackgres.yml') | from_yaml }}"
-  become: Yes

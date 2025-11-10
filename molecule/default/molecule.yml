@@ -1,64 +1,41 @@
 ---
 dependency:
   name: galaxy
+  enabled: ${DEPENDENCY_ENABLED:-True}
   options:
-    role-file: requirements.yml
+    role-file: ${REQUIREMENTS_PATH:-requirements-standalone.yml}
     requirements-file: requirements-collections.yml
 driver:
-  name: vagrant
-  provider:
-    name: virtualbox
-lint: |
-  set -e
-  yamllint .
-  flake8
-  ANSIBLE_ROLES_PATH=${MOLECULE_PROJECT_DIRECTORY}/..:${MOLECULE_PROJECT_DIRECTORY}/../community:${ANSIBLE_ROLES_PATH} ANSIBLE_COLLECTIONS_PATH=${MOLECULE_PROJECT_DIRECTORY}/../community-collections:${ANSIBLE_COLLECTIONS_PATH} ansible-lint
+  name: podman
 platforms:
-  - name: master.osgiliath.test
-    box: ${TESTBOX:-fedora/39-cloud-base}
-    provider_options:
-      cpus: 2
-      memory: 2048
-    interfaces:
-      - auto_config: true
-        network_name: private_network
-        ip: "192.168.50.5"
-    groups:
-      - kube_master
-      - kube_node
-
+  - name: idm.osgiliath.test
+    image: fedora:38
+    # image: ubi9/ubi-init:latest
+    dockerfile: ../common/Dockerfile.j2
+    # registry:
+    #   url: registry.access.redhat.com
+    privileged: True
+    command: "/sbin/init"
+    systemd: True
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    cgroupns_mode: host
+    # network: "firewalld_network"
+    # subnet: '10.3.1.0/24'
+    dns_servers:
+      - 8.8.8.8
+#    capabilities:
+#      - SYS_ADMIN
+#      - CAP_SYS_TIME
+    # pre_build_image: true
 provisioner:
   name: ansible
-#  config_options:
-#    defaults:
-#      forks: 20
-#      gather_timeout: 20
-#      timeout: 60
-#    ssh_connection:
-#      pipelining: true
-#      ssh_args: -o ControlMaster=auto -o ControlPersist=6000s
-  env:
-    ANSIBLE_ROLES_PATH: "${MOLECULE_PROJECT_DIRECTORY}/..:${MOLECULE_PROJECT_DIRECTORY}/../community:${ANSIBLE_ROLES_PATH}"
-    ANSIBLE_COLLECTIONS_PATH: "${MOLECULE_PROJECT_DIRECTORY}/../community-collections:${ANSIBLE_COLLECTIONS_PATH}"
+  config_options:
+    defaults:
+      remote_tmp: /tmp
 verifier:
   name: testinfra
   env:
     PYTHONWARNINGS: "ignore:.*U.*mode is deprecated:DeprecationWarning"
   options:
     v: 1
-scenario:
-  name: default
-  test_sequence:
-    - dependency
-    - lint
-    - cleanup
-    - destroy
-    - syntax
-    - create
-    - prepare
-    - converge
- #   - idempotence
-    - side_effect
-    - verify
-    - cleanup
-    - destroy

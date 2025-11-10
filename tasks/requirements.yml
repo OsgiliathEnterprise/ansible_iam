@@ -1,0 +1,11 @@
+---
+
+- name: ansible-iam | requirements | import localusers
+  ansible.builtin.import_role:
+    name: tcharl.ansible_localuser
+  become: Yes
+
+- name: ansible-iam | requirements | import orchestration role
+  ansible.builtin.import_role:
+    name: geerlingguy.postgresql
+  become: Yes

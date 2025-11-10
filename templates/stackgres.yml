@@ -1,5 +1,0 @@
----
-
-adminui:
-  service:
-    type: LoadBalancer

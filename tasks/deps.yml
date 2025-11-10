@@ -1,6 +1,0 @@
----
-
-- name: ansible-iam | deps | import orchestration role
-  ansible.builtin.import_role:
-    name: tcharl.ansible_orchestration
-  become: Yes

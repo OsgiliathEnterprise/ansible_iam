@@ -1,8 +1,8 @@
 ---
 namespace: "tcharl"
-name: "servicemesh"
+name: "Iam"
 version: "2.0.1"
-description: "Deploys Istio mesh on a kubernetes cluster"
+description: "Deploys Keycloak on bare metal"
 
 authors:
   - "Charlie Mordant <cmordant1@gmail.com>"
