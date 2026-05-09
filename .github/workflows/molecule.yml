@@ -25,7 +25,7 @@ jobs:
       - name: install prereq
         run: |
           cd tcharl.ansible_iam
-          ansible-galaxy role install -r requirements.yml
+          ansible-galaxy role install -r requirements-standalone.yml
           ansible-galaxy collection install -r requirements-collections.yml
   lint:
     runs-on: ubuntu-latest
