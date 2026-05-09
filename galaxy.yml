@@ -1,6 +1,6 @@
 ---
 namespace: "tcharl"
-name: "Iam"
+name: "ansible_iam"
 version: "2.0.1"
 description: "Deploys Keycloak on bare metal"
 
@@ -17,3 +17,5 @@ license:
   - "Apache-2.0"
 tags:
   - "keycloak"
+  - "linux"
+  - "infrastructure"

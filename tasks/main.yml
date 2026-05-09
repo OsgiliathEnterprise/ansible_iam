@@ -1,6 +1,6 @@
 ---
 
-- name: ansible-iam | import roles if standalone
+- name: Import roles if standalone
   ansible.builtin.include_tasks: requirements.yml
   when:
     - standalone_role
