@@ -36,6 +36,12 @@ galaxy_info:
       - 32
       - 33
       - 34
+      - 39
+      - 40
+      - 41
+      - 42
+      - 43
+      - 44
   #   - 25
   # - name: SomePlatform
   #   versions:
